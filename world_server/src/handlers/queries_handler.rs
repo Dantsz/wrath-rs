@@ -110,7 +110,6 @@ pub async fn handle_cmsg_item_query_single(client_manager: &ClientManager, clien
             .await
         }
         Some(item) => {
-            info!("Sending response for {}", item.name());
             wow_world_messages::wrath::item_to_query_response(item).astd_send_to_client(client).await
         }
     }
