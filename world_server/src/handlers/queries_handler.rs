@@ -109,18 +109,17 @@ pub async fn handle_cmsg_item_query_single(client_manager: &ClientManager, clien
             .astd_send_to_client(client)
             .await
         }
-        Some(item) => {
-            wow_world_messages::wrath::item_to_query_response(item).astd_send_to_client(client).await
-        }
+        Some(item) => wow_world_messages::wrath::item_to_query_response(item).astd_send_to_client(client).await
     }
 }
 
 pub async fn handle_cmsg_item_name_query(client_manager: &ClientManager, client_id: u64, _world: &World, packet: &CMSG_ITEM_NAME_QUERY) -> Result<()>
 {
     let item = wow_items::wrath::lookup_item(packet.item);
+    let client = client_manager.get_client(client_id).await?;
     match item
     {
-        Some(item) => wow_world_messages::wrath::item_to_name_query_response(item).astd_send_to_client(client_manager.get_client(client_id).await.unwrap()).await,
+        Some(item) => wow_world_messages::wrath::item_to_name_query_response(item).astd_send_to_client(client).await,
         None => Err(anyhow!("Item {} not found for client {}", packet.item,client_id)),
     }
 }
